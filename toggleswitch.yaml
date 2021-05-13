@@ -1,0 +1,43 @@
+esphome:
+  name: toggle_esp
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: "Some-Wifi"
+  password: "Some-password"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Octo Esp Fallback Hotspot"
+    password: "umFxblAj5WoU"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "passwd"
+
+ota:
+  password: "passwd"
+
+binary_sensor:
+  - platform: gpio
+    id: octotoggler
+    pin:
+      number: D2
+      mode: INPUT_PULLUP
+      inverted: True
+    name: button
+    filters:
+      - delayed_on: 10ms
+      - delayed_off: 10ms
+    on_press:
+     then:
+      - homeassistant.service:
+          service: light.toggle
+          data:
+            entity_id: light.on_off_plug_1
